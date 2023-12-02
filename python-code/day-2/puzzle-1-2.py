@@ -90,7 +90,7 @@ class DataProcessing:
         return dict_res
 
 if __name__ == "__main__":
-    mode = "part1" #"part1", "test"
+    mode = "part1" #"part2", "test"
 
     if mode == "test":
         dp = DataProcessing()
