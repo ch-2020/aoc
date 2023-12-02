@@ -1,7 +1,7 @@
 input_lines = []
 total_sum = 0
 
-with open("day-1/puzzle-1-input.txt") as file:
+with open("day-1/puzzle-day-1-input.txt") as file:
     input_lines = file.readlines()
 
 for l in input_lines:
