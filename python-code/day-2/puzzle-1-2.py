@@ -105,10 +105,10 @@ if __name__ == "__main__":
         filepath = os.path.join(os.path.dirname(__file__), 'puzzle-day-2-input.txt')
         lines = ReadFileObject().get_lines_from_file(filepath)
         gg = GameGuessing(12, 13, 14)
-       
+        gg.generate_dict(lines[1])
+
         if mode == "part1": 
             if lines[0]:
-                gg.generate_dict(lines[1])
                 sum = gg.calculate_sum()
                 print(f'Sum of games id: {sum}')
             else: 
@@ -116,10 +116,9 @@ if __name__ == "__main__":
 
         if mode == "part2":
             if lines[0]:
-                gg.generate_dict(lines[1])
                 gg.generate_maxcolor_from_dict()
                 sum_power = gg.calculate_sum_power()
-                print(f'Sum of games id: {sum_power}')
+                print(f'Sum of power id: {sum_power}')
             else: 
                 print(f'Error when reading file!')
 
