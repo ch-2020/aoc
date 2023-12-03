@@ -11,6 +11,10 @@ class SchematicChecker:
         self.dict_all_numbers = {}
         self.total_number = 0
 
+        self.dict_gears = {}
+        self.dict_gears_valid = {}
+        self.gear_total_number = 0
+
     def run_all(self) -> int:
         self.extract_special_characters()
         self.extract_all_numbers()
@@ -135,8 +139,64 @@ class SchematicChecker:
         print(f'--{self.total_number}--')
         return self.total_number
 
+    def find_gears(self) -> dict:
+        if self.dict_spec_character:
+            for row_key, row_dict in self.dict_spec_character.items():
+                self.dict_gears[row_key] = {}
+
+                for col_key, col_val in row_dict.items():
+                    if col_val == "*":
+                        self.dict_gears[row_key][col_key] = col_val
+                
+            return self.dict_gears
+
+    def find_gears_total_number(self) -> int:
+        self.dict_gears_valid = dict(self.dict_gears)
+        for row_key, row_dict in self.dict_gears.items():
+            for col_key, col_val in row_dict.items():
+                val1, val2, sum = self.is_valid_gear(row_key, col_key)
+                self.gear_total_number += sum
+        
+        return self.gear_total_number
+    
+    def is_valid_gear(self, row_key, col_key):
+        val1 = 0
+        val2 = 0
+        product = 0
+
+        #check whether two values exists
+        values = {}
+
+        for r in range(row_key-1, row_key+2):
+            for c in range(col_key-3, col_key+2):
+                try:
+                    values[self.dict_all_numbers[r][c]] = {}
+                    values[self.dict_all_numbers[r][c]]['row'] = r
+                    values[self.dict_all_numbers[r][c]]['col'] = c
+                    values[self.dict_all_numbers[r][c]]['len'] = len(str(self.dict_all_numbers[r][c]))
+                except:
+                    pass
+
+        values_filtered = dict(values)
+        if len(values) >= 2:
+            #check whether values are within the area of *
+            for val_key, val_info in values.items():
+                r = range(col_key-1, col_key+2)
+                if (val_info['col'] in r) or ((val_info['col']+val_info['len']-1) in r):
+                    continue
+                else:
+                    values_filtered.pop(val_key)
+
+        #check if values are still two, multiply both values
+        if len(values_filtered) == 2:
+            val1 = int(list(values_filtered.keys())[0])
+            val2 = int(list(values_filtered.keys())[1])
+            product = val1 * val2
+            
+        return val1, val2, product 
+
 if __name__ == "__main__":
-    mode = "part1" #"part2", "test"
+    mode = "part2" #"part2", "test"
 
     if mode == "test":
         test_input = [
@@ -175,7 +235,7 @@ if __name__ == "__main__":
             'test_1': res_test1 == sc.extract_special_characters(),       
             'test_2': res_test2 == sc.extract_all_numbers(),
             'test_3': 4361 == sc.find_sum(),
-            'test4': 925 == sc2.run_all()
+            'test_4': 925 == sc2.run_all() 
             }
         for k, v in unittest_dataprocessing.items():
             print(f'{k}: {"passed" if v else "failed"}')
@@ -186,15 +246,18 @@ if __name__ == "__main__":
         
         if lines[0]:
             sc = SchematicChecker(lines[1])
+            dict_char = sc.extract_special_characters()
+            dict_num = sc.extract_all_numbers()
+
             if mode == "part1": 
-                dict_char = sc.extract_special_characters()
-                dict_num = sc.extract_all_numbers()
                 sum = sc.find_sum(show=False)
-                
                 print(f'Total number is {sum}')
 
             if mode == "part2":
-                pass 
+                dict_gears = sc.find_gears()
+                sum = sc.find_gears_total_number()
+                print(f'Total number is {sum}')
+
         else:
             print("Error when opening file!")
         
