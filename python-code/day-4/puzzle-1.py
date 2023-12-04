@@ -12,10 +12,20 @@ class ScratchCards:
         self.ans_arrays = []
         self.scratchcard_sum = 0
 
+        #part2
+        self.dict_scratchcards = {}
+
     def run_program(self, partid) -> int:
         if partid == "part1":
             self.split_input_array()
             self.calculate_sum()
+        
+        elif partid == "part2":
+            self.split_input_array()
+            self.part2_init_dict()
+            self.part2_generate_next_cards()
+            self.part2_calculate_sum()
+
         return self.scratchcard_sum
 
     def split_input_array(self) -> None:
@@ -31,7 +41,7 @@ class ScratchCards:
         self.scratchcard_sum = 0
         for k in range(len(self.winning_arrays)):
             temp_sum = 1
-            duplicates = np.intersect1d(self.winning_arrays[k], self.ans_arrays[k])
+            duplicates = self._get_duplicates(self.winning_arrays[k], self.ans_arrays[k])
             
             if len(duplicates) > 0:
                 for _ in range(len(duplicates)-1):
@@ -42,8 +52,45 @@ class ScratchCards:
             self.scratchcard_sum += temp_sum
         return self.scratchcard_sum
 
+    def _get_duplicates(self, array1, array2):
+        return np.intersect1d(array1, array2)
+
+    def _get_duplicates_length(self, array1, array2):
+        index = [i for i, v in enumerate(array1) if array1.count(v) == array2.count(v)]
+        return len(index) 
+
+    def part2_init_dict(self) -> dict:
+        for l in range(len(self.inputs_array)):
+            self.dict_scratchcards[int(l)+1] = 1
+        print(self.dict_scratchcards)
+        return self.dict_scratchcards
+
+    def part2_generate_next_cards(self) -> dict:
+        self.scratchcard_sum = 0
+        for k, v in enumerate(self.winning_arrays):
+            duplicates_len = self._get_duplicates_length(self.winning_arrays[k], self.ans_arrays[k])
+            
+            #update dict with additional 
+            for n in range(1, duplicates_len+1):
+                try:
+                    self.dict_scratchcards[k+1+n] = self.dict_scratchcards[k+1+n] + self.dict_scratchcards[k+1]*1
+                except:
+                    pass
+
+            print(f'Names: {k}')
+            print(f'----: {duplicates_len}')
+            print(f'----: {self.dict_scratchcards}')
+
+        return self.dict_scratchcards
+
+    def part2_calculate_sum(self) -> int:
+        self.scratchcard_sum = 0
+        for k, v in self.dict_scratchcards.items():
+            self.scratchcard_sum += v
+        return self.scratchcard_sum
+
 if __name__ == "__main__":
-    mode = "part1" #"part2", "test"
+    mode = "part2" #"part2", "test"
 
     if mode == "test":
         test_inputs = [
@@ -57,8 +104,12 @@ if __name__ == "__main__":
         res_test1 = 13
      
         test_obj = ScratchCards(test_inputs)
+        test_obj2 = ScratchCards(test_inputs)
+
         unittest_dataprocessing = { 
-            'test_1': res_test1 == test_obj.run_program("part1")
+            'test_1': res_test1 == test_obj.run_program("part1"),
+            'test_2': {1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1} == test_obj2.part2_init_dict(),
+            'test_3': 30 == test_obj2.run_program("part2")
             }
         for k, v in unittest_dataprocessing.items():
             print(f'{k}: {"passed" if v else "failed"}')
@@ -69,14 +120,8 @@ if __name__ == "__main__":
         
         if lines[0]:
             func_obj = ScratchCards(lines[1])
-
-            if mode == "part1": 
-                sum = func_obj.run_program(mode)
-                print(f'Total number is {sum}')
-
-            if mode == "part2":
-                # TO DO
-                print(f'Total number is {sum}')
+            sum = func_obj.run_program(mode)
+            print(f'Total number is {sum}') 
 
         else:
             print("Error when opening file!")
