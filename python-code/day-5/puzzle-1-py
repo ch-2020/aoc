@@ -1,49 +1,115 @@
 import sys, os
 import re
+import pprint
 
 sys.path.append("..")
 from funcs.readfile import ReadFileObject 
 
-# TO DO
-class TOBEDEFINE:
-    def __init__(self) -> None:
-        # TO DO
-        pass
+class SeedFilter:
+    def __init__(self, inputs) -> None:
+        self.input_arrays = inputs
+        self.map_names_list = [
+            "seed-to-soil",
+            "soil-to-fertilizer",
+            "fertilizer-to-water",
+            "water-to-light",
+            "light-to-temperature",
+            "temperature-to-humidity",
+            "humidity-to-location"
+            ]
 
-    def to_be_define(self) -> None:
-        # TO DO
-        pass
+        #part1
+        self.seed_list = []
+        self.maps = {}
+        self.extracted_locations = []
+        self.min_location = 0
+
+    def run_program(self, mode) -> int:
+        if mode == "part1":
+            self.part1_extract_info_from_inputs()
+            self.part1_search_map()
+            self.part1_findmin()
+
+        elif mode == "part2":
+            pass
+    
+        return self.min_location
+
+    def part1_extract_info_from_inputs(self):
+        #get seed list
+        self._get_seed_list()
+        print(f'---- Seeds: {self.seed_list}')
+
+        #get all maps
+        current_map_name = ""
+        list_cnt = 0
+        for l in range(1, len(self.input_arrays)):
+            current_str = self.input_arrays[l]
+
+            if current_str.strip():
+                if len(current_str.split(":")) == 2: #new map identified
+                    current_map_name = current_str.split(":")[0].split(" ")[0]
+                    self.maps[current_map_name] = {}
+                    list_cnt = 0
+
+                else: #it is the numbers row
+                    self.maps[current_map_name][list_cnt] = {}
+
+                    numberlist =[int(x) for x in current_str.strip().split(" ")]
+                    self.maps[current_map_name][list_cnt]["src"] = numberlist[1]
+                    self.maps[current_map_name][list_cnt]["dest"] = numberlist[0]
+                    self.maps[current_map_name][list_cnt]["len"] = numberlist[2]
+                    list_cnt = list_cnt + 1
+        pprint.pprint(self.maps)
+  
+        
+    def part1_search_map(self):
+        self.extracted_locations = []
+        if self.maps:
+            for seed in self.seed_list:
+                temp_val_holder = int(seed)
+                for k in self.map_names_list:
+                    for key, rules in self.maps[k].items():
+                        if temp_val_holder in range(rules['src'], rules['src']+rules['len']+1):
+                            temp_val_holder = rules['dest'] + (temp_val_holder - rules['src'])
+                            break
+                        else: 
+                            temp_val_holder = temp_val_holder
+
+                self.extracted_locations.append(temp_val_holder)
+        print(f'--- Seed locations: {self.extracted_locations}')
+
+    def part1_findmin(self) -> int:
+        if self.extracted_locations:
+            self.min_location = min(self.extracted_locations)
+        return self.min_location
+
+    def _get_seed_list(self) -> None:
+        seedlist = self.input_arrays[0].split(":")[1]
+        self.seed_list = re.findall('\d+', seedlist)
 
 if __name__ == "__main__":
-    mode = "test" #"part2", "test"
+    mode = "part1" #"part2", "test"
 
     if mode == "test":
-        # TO DO
-        res_test1 = {0: {0: 'X', 1: 'X', 2: 'X', 3: 'X', 4: 'X', 5: 'X', 6: 'X', 7: 'X', 8: 'X', 9: 'X'}, 1: {0: 'X', 1: 'X', 2: 'X', 3: '*', 4: 'X', 5: 'X', 6: 'X', 7: 'X', 8: 'X', 9: 'X'}, 2: {0: 'X', 1: 'X', 2: 'X', 3: 'X', 4: 'X', 5: 'X', 6: 'X', 7: 'X', 8: 'X', 9: 'X'}, 3: {0: 'X', 1: 'X', 2: 'X', 3: 'X', 4: 'X', 5: 'X', 6: '#', 7: 'X', 8: 'X', 9: 'X'}, 4: {0: 'X', 1: 'X', 2: 'X', 3: '*', 4: 'X', 5: 'X', 6: 'X', 7: 'X', 8: 'X', 9: 'X'}, 5: {0: 'X', 1: 'X', 2: 'X', 3: 'X', 4: 'X', 5: '+', 6: 'X', 7: 'X', 8: 'X', 9: 'X'}, 6: {0: 'X', 1: 'X', 2: 'X', 3: 'X', 4: 'X', 5: 'X', 6: 'X', 7: 'X', 8: 'X', 9: 'X'}, 7: {0: 'X', 1: 'X', 2: 'X', 3: 'X', 4: 'X', 5: 'X', 6: 'X', 7: 'X', 8: 'X', 9: 'X'}, 8: {0: 'X', 1: 'X', 2: 'X', 3: '$', 4: 'X', 5: '*', 6: 'X', 7: 'X', 8: 'X', 9: 'X'}, 9: {0: 'X', 1: 'X', 2: 'X', 3: 'X', 4: 'X', 5: 'X', 6: 'X', 7: 'X', 8: 'X', 9: 'X'}}
-     
-        test_obj = TOBEDEFINE()
+        test_filepath = os.path.join(os.path.dirname(__file__), 'puzzle-test.txt')
+        test_lines = ReadFileObject().get_lines_from_file(test_filepath)
+    
+        test_obj = SeedFilter(test_lines[1])
         unittest_dataprocessing = { 
-            'test_1': res_test1 == test_obj.to_be_define()
+            'test_1': 35 == test_obj.run_program("part1")
             }
         for k, v in unittest_dataprocessing.items():
             print(f'{k}: {"passed" if v else "failed"}')
 
     else:
-        # TO DO
-        filepath = os.path.join(os.path.dirname(__file__), 'puzzle-day-TODO-input.txt')
+        filepath = os.path.join(os.path.dirname(__file__), 'puzzle-day-5-input.txt')
         lines = ReadFileObject().get_lines_from_file(filepath)
         
         if lines[0]:
-            func_obj = TOBEDEFINE(lines[1])
-            # TO DO
-
-            if mode == "part1": 
-                # TO DO
-                print(f'Total number is {sum}')
-
-            if mode == "part2":
-                # TO DO
-                print(f'Total number is {sum}')
+            func_obj = SeedFilter(lines[1])
+            res = func_obj.run_program(mode)
+            print(f'Min location is {res}')
 
         else:
             print("Error when opening file!")
