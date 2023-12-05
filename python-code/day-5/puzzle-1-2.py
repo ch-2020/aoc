@@ -24,22 +24,66 @@ class SeedFilter:
         self.extracted_locations = []
         self.min_location = 0
 
+        #part2
+        self.seed_list_range = []
+
     def run_program(self, mode) -> int:
         if mode == "part1":
+            self.part1_get_seedlist()
             self.part1_extract_info_from_inputs()
             self.part1_search_map()
             self.part1_findmin()
 
         elif mode == "part2":
-            pass
-    
+            self.part2_get_seedlist()
+            self.part1_extract_info_from_inputs()
+            self.part2_search_map()
+
         return self.min_location
 
-    def part1_extract_info_from_inputs(self):
-        #get seed list
-        self._get_seed_list()
-        print(f'---- Seeds: {self.seed_list}')
+    def part2_get_seedlist(self):
+        seedlist_array = self.input_arrays[0].split(":")[1]
+        seed_list = [int(x) for x in re.findall('\d+', seedlist_array)]
+      
+        for i in range(0, len(seed_list), 2):
+            self.seed_list_range.append((seed_list[i], seed_list[i] + seed_list[i+1]))
 
+    def part2_search_map(self) -> int:
+        if self.maps:
+            for k in self.map_names_list:
+                new_range = []
+
+                while len(self.seed_list_range) > 0:
+                    seed_s, seed_e = self.seed_list_range.pop()
+
+                    for key, value in self.maps[k].items():
+                        src_s = value['src']
+                        dest_s = value['dest']
+                        length = value['len']
+
+                        o_start = max(seed_s, src_s)
+                        o_end = min(seed_e, src_s + length)
+
+                        if o_start < o_end:
+                            new_range.append((o_start - src_s + dest_s, o_end - src_s + dest_s))
+                            if o_start > seed_s:
+                                self.seed_list_range.append((seed_s, o_start))
+                            if  seed_e > o_end:
+                                self.seed_list_range.append((o_end, seed_e))
+                            break
+                    else:
+                        new_range.append((seed_s, seed_e))
+                        
+                self.seed_list_range = new_range
+            
+            self.min_location = min(sorted(self.seed_list_range))[0]
+        return self.min_location
+
+    def part1_get_seedlist(self):
+        seedlist = self.input_arrays[0].split(":")[1]
+        self.seed_list = re.findall('\d+', seedlist)
+
+    def part1_extract_info_from_inputs(self):
         #get all maps
         current_map_name = ""
         list_cnt = 0
@@ -60,9 +104,7 @@ class SeedFilter:
                     self.maps[current_map_name][list_cnt]["dest"] = numberlist[0]
                     self.maps[current_map_name][list_cnt]["len"] = numberlist[2]
                     list_cnt = list_cnt + 1
-        pprint.pprint(self.maps)
-  
-        
+
     def part1_search_map(self):
         self.extracted_locations = []
         if self.maps:
@@ -77,19 +119,14 @@ class SeedFilter:
                             temp_val_holder = temp_val_holder
 
                 self.extracted_locations.append(temp_val_holder)
-        print(f'--- Seed locations: {self.extracted_locations}')
 
     def part1_findmin(self) -> int:
         if self.extracted_locations:
             self.min_location = min(self.extracted_locations)
         return self.min_location
 
-    def _get_seed_list(self) -> None:
-        seedlist = self.input_arrays[0].split(":")[1]
-        self.seed_list = re.findall('\d+', seedlist)
-
 if __name__ == "__main__":
-    mode = "part1" #"part2", "test"
+    mode = "part2" #"part2", "test"
 
     if mode == "test":
         test_filepath = os.path.join(os.path.dirname(__file__), 'puzzle-test.txt')
@@ -97,7 +134,8 @@ if __name__ == "__main__":
     
         test_obj = SeedFilter(test_lines[1])
         unittest_dataprocessing = { 
-            'test_1': 35 == test_obj.run_program("part1")
+            'test_1': 35 == test_obj.run_program("part1"),
+            'test_2': 46 == test_obj.run_program("part2")
             }
         for k, v in unittest_dataprocessing.items():
             print(f'{k}: {"passed" if v else "failed"}')
