@@ -34,21 +34,13 @@ if __name__ == "__main__":
             print(f'{k}: {"passed" if v else "failed"}')
 
     else:
-        # TO DO
         filepath = os.path.join(os.path.dirname(__file__), 'puzzle-day-TODO-input.txt')
         lines = ReadFileObject().get_lines_from_file(filepath)
         
-        if lines[0]:
+        if lines[0]:  
             func_obj = TOBEDEFINE(lines[1])
-            # TO DO
-
-            if mode == "part1": 
-                # TO DO
-                print(f'Total number is {sum}')
-
-            if mode == "part2":
-                # TO DO
-                print(f'Total number is {sum}')
+            sum = func_obj.run_program(mode)
+            print(f'Total number is {sum}')
 
         else:
             print("Error when opening file!")
