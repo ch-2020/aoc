@@ -1,3 +1,5 @@
+#Online solution
+# LCM Solution
 import numpy as np
 
 instructions = []
