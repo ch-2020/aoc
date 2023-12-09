@@ -1,5 +1,4 @@
 import sys, os
-import pprint
 import numpy as np
 
 sys.path.append("..")
@@ -48,7 +47,6 @@ class Wasteland:
                         break
                 except:
                     print(f'**** ERROR: {current_step}: {s}')
-
         return count
 
     def part2_solution(self):
