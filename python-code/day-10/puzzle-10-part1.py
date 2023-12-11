@@ -3,6 +3,7 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 from matplotlib import colors
+import matplotlib.animation as animation
 
 class PipeMaze:
     def __init__(self, filepath) -> None:
@@ -23,7 +24,9 @@ class PipeMaze:
             '7': [(0, -1), (1, 0)]
         }
 
+        self.loop_coords = []
         self.plot_data = []
+        self.area_count = 0
 
     def init_plot_demo(self):
         self.rows = len(self.extracted_data)
@@ -31,38 +34,45 @@ class PipeMaze:
         self.plot_data = np.zeros([self.rows, self.columns])
     
     def draw_plot_demo(self):
-        cmap = colors.ListedColormap(['white','blue'])
+        self.cmap = colors.ListedColormap(['white','blue'])
         bounds = [0, 0.5, 1]
-        norm = colors.BoundaryNorm(bounds, cmap.N)
-        fig, ax = plt.subplots()
-        ax.imshow(self.plot_data, cmap=cmap, norm=norm)
-
-        ax.grid(which='major', axis='both', linestyle='-', color='k', linewidth=0.1)
-        ax.set_xticks(np.arange(0, self.columns, 1))
-        ax.set_yticks(np.arange(0, self.rows, 1))
-        ax.set(xticklabels=[])  
-        ax.set(yticklabels=[])  
-
+        self.norm = colors.BoundaryNorm(bounds, self.cmap.N)
+        self.fig, self.ax = plt.subplots()
+        
+        self.ax.grid(which='major', axis='both', linestyle='-', color='k', linewidth=0.1)
+        self.ax.set_xticks(np.arange(0, self.columns, 1))
+        self.ax.set_yticks(np.arange(0, self.rows, 1))
+        self.ax.set(xticklabels=[])  
+        self.ax.set(yticklabels=[])  
+        self.ax.imshow(self.plot_data, cmap=self.cmap, norm=self.norm)
         plt.savefig('part1_viz.png')
-        plt.show()
 
-    def run_program(self, mode) -> int:
+        self.plot_animate = np.zeros([self.rows, self.columns])
+        def update(i):
+            self.ax.clear()
+            point, char = self.loop_coords[i]
+            self.plot_animate[point[0]][point[1]] = 1
+            self.ax.imshow(self.plot_animate, cmap=self.cmap, norm=self.norm)
+            return self.ax
+        ani = animation.FuncAnimation(self.fig, update, frames=len(self.loop_coords))
+        plt.show()
+        ani.save('animation.gif', writer='PillowWriter')
+        plt.close() 
+
+    def run_program(self, mode, replace = '') -> int:
         self.extract_data()
         self.init_plot_demo()
         self.find_start()
         if mode == "part1":
             self.sum = self.part1_solution()
-            
-        elif mode == "part2":
-            self.sum = self.part2_solution()
-        self.draw_plot_demo()
-        return self.sum
+            self.draw_plot_demo()
+            return self.sum
 
     def extract_data(self):
         with open(self.filepath, "r") as f:
             self.inputs = f.readlines()
             for l in self.inputs:
-                puz = [x for x in [*l]]
+                puz = [x for x in [*l.strip()]]
                 self.extracted_data.append(puz)
 
     def find_start(self):
@@ -78,8 +88,6 @@ class PipeMaze:
         symbol = self.extracted_data[r][c]
         shifts = self.dict_pipes[symbol]
         related = [(r + shifts[0][0], c + shifts[0][1]), (r + shifts[1][0], c + shifts[1][1])]
-        print(f'---- current coord : {prev_coord} -> {current_coord} ----')
-
         related.remove(prev_coord)
         return related[0]
 
@@ -109,6 +117,7 @@ class PipeMaze:
         prev = self.startpoint
         current = surrounds[0]
         self.plot_data[prev[0]][prev[1]] = 3
+        self.loop_coords.append((prev, 'S'))
 
         while current != self.startpoint:
             self.count += 1
@@ -116,18 +125,16 @@ class PipeMaze:
             prev = current
             current = next_step
             self.plot_data[prev[0]][prev[1]] = 1
-        
+            self.loop_coords.append((prev, self.extracted_data[prev[0]][prev[1]]))        
         steps = int((self.count + 1) / 2)
         return steps
 
-    def part2_solution(self) -> int:
-        pass
-
 if __name__ == "__main__":
-    mode = "part1" #"part2", "test"
+    mode = "test" #"test"
 
     if mode == "test":     
         test_obj = PipeMaze("puzzle-test.txt")
+        test_obj2 = PipeMaze("puzzle-test2.txt")
         unittest_dataprocessing = { 
             'test_1': 8 == test_obj.run_program("part1")
             }
