@@ -1,6 +1,6 @@
 import numpy as np
 
-class TODO:
+class HotSpring:
     def __init__(self, filepath) -> None:
         self.filepath = filepath
         self.inputs = []
@@ -35,14 +35,14 @@ if __name__ == "__main__":
     mode = "test" #"part2", "test"
 
     if mode == "test":     
-        test_obj = TODO("puzzle-test.txt")
+        test_obj = HotSpring("puzzle-test.txt")
         unittest_dataprocessing = { 
-            'test_1': 8 == test_obj.run_program("part1")
+            'test_1': 21 == test_obj.run_program("part1")
             }
         for k, v in unittest_dataprocessing.items():
             print(f'{k}: {"passed" if v else "failed"}')
 
     else:
-        func_obj = TODO("puzzle-day-10-input.txt")      
+        func_obj = HotSpring("puzzle-day-12-input.txt")      
         sum = func_obj.run_program(mode)    
         print(f'Total number is {sum}')
