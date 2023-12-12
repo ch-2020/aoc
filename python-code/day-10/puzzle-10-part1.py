@@ -1,12 +1,9 @@
 import numpy as np
-import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import colors
-from matplotlib.animation import FuncAnimation, FFMpegWriter, PillowWriter
-from PIL import Image,ImageFilter
-#matplotlib.use("TkAgg")
+from matplotlib.animation import FuncAnimation, FFMpegWriter
 print("backend", plt.rcParams["backend"])
-#matplotlib.use('Qt5Agg') # Qt5Agg
+#matplotlib.use('Qt5Agg') 
 
 class PipeMaze:
     def __init__(self, filepath) -> None:
@@ -56,17 +53,11 @@ class PipeMaze:
             point, char = self.loop_coords[i]
             self.plot_animate[point[0]][point[1]] = 1
             self.ax.imshow(self.plot_animate, cmap=self.cmap, norm=self.norm)
-            """ self.fig.save('animation/animation.gif',
-               save_all=True,
-               append_images=self.fig,
-               duration=100,
-               loop=0)
-            return self.ax """
+
         ani = FuncAnimation(self.fig, update, frames=len(self.loop_coords), interval=30)
+        writervideo = FFMpegWriter(fps=30) 
+        ani.save('animation/animation.mp4', writer=writervideo)
         plt.show()
-        writervideo = PillowWriter(fps=30) 
-        ani.save('animation/animation.gif', writer=writervideo)
-        plt.close() 
 
     def run_program(self, mode, replace = '') -> int:
         self.extract_data()
@@ -139,7 +130,7 @@ class PipeMaze:
         return steps
 
 if __name__ == "__main__":
-    mode = "test" #"test"
+    mode = "part1" #"test"
 
     if mode == "test":     
         test_obj = PipeMaze("puzzle-test.txt")
