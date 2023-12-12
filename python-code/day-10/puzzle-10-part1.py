@@ -1,9 +1,12 @@
 import numpy as np
 import matplotlib
-matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 from matplotlib import colors
-import matplotlib.animation as animation
+from matplotlib.animation import FuncAnimation, FFMpegWriter, PillowWriter
+from PIL import Image,ImageFilter
+#matplotlib.use("TkAgg")
+print("backend", plt.rcParams["backend"])
+#matplotlib.use('Qt5Agg') # Qt5Agg
 
 class PipeMaze:
     def __init__(self, filepath) -> None:
@@ -45,7 +48,7 @@ class PipeMaze:
         self.ax.set(xticklabels=[])  
         self.ax.set(yticklabels=[])  
         self.ax.imshow(self.plot_data, cmap=self.cmap, norm=self.norm)
-        plt.savefig('part1_viz.png')
+        plt.savefig('img/part1_viz.png')
 
         self.plot_animate = np.zeros([self.rows, self.columns])
         def update(i):
@@ -53,10 +56,16 @@ class PipeMaze:
             point, char = self.loop_coords[i]
             self.plot_animate[point[0]][point[1]] = 1
             self.ax.imshow(self.plot_animate, cmap=self.cmap, norm=self.norm)
-            return self.ax
-        ani = animation.FuncAnimation(self.fig, update, frames=len(self.loop_coords))
+            """ self.fig.save('animation/animation.gif',
+               save_all=True,
+               append_images=self.fig,
+               duration=100,
+               loop=0)
+            return self.ax """
+        ani = FuncAnimation(self.fig, update, frames=len(self.loop_coords), interval=30)
         plt.show()
-        ani.save('animation.gif', writer='PillowWriter')
+        writervideo = PillowWriter(fps=30) 
+        ani.save('animation/animation.gif', writer=writervideo)
         plt.close() 
 
     def run_program(self, mode, replace = '') -> int:
