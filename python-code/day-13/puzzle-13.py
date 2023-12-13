@@ -49,6 +49,40 @@ class Mirrors:
         else:
             return isFound, pointer
 
+    def check_difference(self, l1, l2) -> int:
+        diff = 0
+        for num, cha in enumerate(l1):
+            if l1[num] != l2[num]:
+                diff += 1
+        return diff
+    
+    def fix_smudge(self, block):
+        # --- TO DO ---
+        b_tmp = block
+        updated = False
+        #check horizontal
+        for k_i, i in enumerate(block):
+            for k_j, j in enumerate(block):
+                if k_i != k_j:
+                    if self.check_difference(i, j) == 1:
+                        b_tmp[k_i] = ['#']*len(block[0])
+                        b_tmp[k_j] = ['#']*len(block[0])
+                        updated = True
+                        break
+        #check vertical
+        if updated == False:
+            b_tmp = np.transpose(block).tolist()
+            for k_i, i in enumerate(block):
+                for k_j, j in enumerate(block):
+                    if k_i != k_j:
+                        if self.check_difference(i, j) == 1:
+                            b_tmp[k_i] = ['#']*len(block[0])
+                            b_tmp[k_j] = ['#']*len(block[0])
+                            break
+            b_tmp = np.transpose(b_tmp).tolist()
+        block = b_tmp
+        return block
+
     def part1_solution(self) -> int:
         self.sum = 0
 
@@ -65,15 +99,26 @@ class Mirrors:
         return self.sum
 
     def part2_solution(self) -> int:
-        pass
+        # --- TO DO ---
+        self.sum = 0
+        for k, b in enumerate(self.extracted):
+            #update the smudge
+            b_updated = self.fix_smudge(b)
+            pprint.pprint(b)
+            pprint.pprint(b_updated)
+
+            input()
+            #search mirror as in solution 1
+        
 
 if __name__ == "__main__":
-    mode = "part1" #"part2", "test"
+    mode = "test" #"part2", "test"
 
     if mode == "test":     
         test_obj = Mirrors("puzzle-test.txt")
         unittest_dataprocessing = { 
-            'test_1': 405 == test_obj.run_program("part1")
+            #'test_1': 405 == test_obj.run_program("part1"),
+            'test_1': 400 == test_obj.run_program("part2"),
             }
         for k, v in unittest_dataprocessing.items():
             print(f'{k}: {"passed" if v else "failed"}')
