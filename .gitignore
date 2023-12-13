@@ -160,3 +160,7 @@ cython_debug/
 #.idea/
 
 /rust-code
+python-code/day-10/.DS_Store
+.DS_Store
+.gitignore
+python-code/.DS_Store
