@@ -2,6 +2,19 @@ import numpy as np
 import pprint as pp
 import re
 
+# based on tutorial to understand the concept, using a dict directly will work too
+# DELETE: 
+# -- del(): remove key-value pair
+# -- pop(): remove value
+# -- popitem(): remove last inserted item
+# -- clear(): remove all elements
+# SET:
+# -- dict[key]=val: either update value or add new a key-value
+# GET:
+# -- dict.keys(): get all keys
+# -- dict.values(): get all values
+# -- dict[key]: get value
+
 class HashTable:
     def __init__(self, size):
         self.size = size
