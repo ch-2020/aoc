@@ -133,4 +133,4 @@ if __name__ == "__main__":
     else:
         func_obj = LensLib("puzzle-15-input.txt")      
         sum = func_obj.run_program(mode)    
-        print(f'Total number is {sum}')
+        print(f'Total number is {sum}') #part1: 520500, part2: 213097
