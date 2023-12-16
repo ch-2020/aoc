@@ -13,6 +13,10 @@ Part 2 Visualization (Unicode in Terminal)
 
 ![part2-vid](python-code/day-14/d14-p2-viz.gif)
 
+### Day 16
+Part 1 Visualization (Unicode in Terminal)
+
+![part1-vid](python-code/day-16/d16-p1.gif)
 
 
 
