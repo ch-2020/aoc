@@ -27,7 +27,6 @@ class TODO:
     def part1_solution(self) -> int:
        pass
 
-
     def part2_solution(self) -> int:
         pass
 
@@ -37,12 +36,13 @@ if __name__ == "__main__":
     if mode == "test":     
         test_obj = TODO("puzzle-test.txt")
         unittest_dataprocessing = { 
-            'test_1': 8 == test_obj.run_program("part1")
+            'test_1': 8 == test_obj.run_program("part1"),
+            'test_2': 8 == test_obj.run_program("part2")
             }
         for k, v in unittest_dataprocessing.items():
             print(f'{k}: {"passed" if v else "failed"}')
 
     else:
-        func_obj = TODO("puzzle-day-10-input.txt")      
+        func_obj = TODO("puzzle-input.txt")      
         sum = func_obj.run_program(mode)    
         print(f'Total number is {sum}')

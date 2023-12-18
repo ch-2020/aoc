@@ -1,7 +1,7 @@
 # advent-of-code-2023
 Solutions on the yearly advent of code challenges, written in Python 
 
-
+## Visualization
 ### Day 10
 Part 1 Visualization (Matplotlib)
 
@@ -18,5 +18,15 @@ Part 1 Visualization (Unicode in Terminal)
 
 ![part1-vid](python-code/day-16/d16-p1.gif)
 
+
+
+## DSA topics worth revisit
+- day 5: Array sclicing
+- day 8: LCM problem
+- day 9: Recursion
+- day 12: Dynamic programming - recursive/memoization (text slicing)
+- day 15: Hash table / hashmap
+- day 17: priority queue, heapq (shortest path problem)
+- day 18: polygon area (shoelace formula / pick's theorem)
 
 
