@@ -85,11 +85,11 @@ class Aplenty:
             else: 
                 T = (n + 1, hi)
                 F = (lo, n)
-            if T[0] <= T[1]: # if true -> recursive to the next one
+            if T[0] <= T[1]: # if valid -> recursive to the next one
                 copy = dict(ranges)
                 copy[key] = T
                 total += self.check_ranges(copy, target)
-            if F[0] <= F[1]: # if false -> check next rule
+            if F[0] <= F[1]: # if valid -> check next rule
                 ranges = dict(ranges)
                 ranges[key] = F
             else:
