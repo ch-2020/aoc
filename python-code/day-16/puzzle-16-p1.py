@@ -2,6 +2,7 @@ import numpy as np
 import re
 import pprint as pp
 import os, time
+from heapq import heappop, heappush
 
 class VisuMap:
     def __init__(self, rowlen, collen, dict_mirrors) -> None:
@@ -10,6 +11,9 @@ class VisuMap:
         self.dict_mirrors = dict_mirrors
         self.len_row = rowlen
         self.len_col = collen
+
+    def clear_route(self):
+        self.route = []
 
     def update_mirrors(self, mirrors):
         self.mirrors = list(mirrors)
@@ -79,10 +83,7 @@ class LavaFloor:
        
         if mode == "part1":
             self.sum = self.part1_solution()
-            
-        elif mode == "part2":
-            self.sum = self.part2_solution()
-        
+
         return self.sum
 
     def extract_data(self):
@@ -301,6 +302,26 @@ class LavaFloor:
                         break
             return valid
 
+    def find_complete_route(self, start, direction, update, map, mirrors):
+        nexts = self.search_route(start, direction)
+        route = [(start,'start')]
+        map.update_mirrors(mirrors)
+        map.route.append(start)
+        for n, d in nexts:
+            map.add_point(start, n)
+        # search route
+        while len(nexts) > 0: 
+            n = nexts.pop()    
+            newnexts = self.search_route(n[0], n[1])
+            for new in newnexts:
+                if new not in route and new[1] != '':
+                    nexts.append(new)
+                route.append(new)
+                map.add_point(n[0], new[0])
+                if update:
+                    map.update()
+        return route, map
+
     def part1_solution(self):
         map = VisuMap(self.len_row, self.len_col, self.dict_mirrors)
         map.update_mirrors(self.dict_mirrors.keys())
@@ -309,33 +330,16 @@ class LavaFloor:
         for i in self.dict_mirrors:
             self.find_next(i, self.dict_mirrors[i])
         
-        nexts = self.search_route((0,0), "left")
-        self.route.append(((0,0),'start'))
-        map.route.append((0,0))
-        # search route
-        while len(nexts) > 0: 
-            n = nexts.pop()    
-            newnexts = self.search_route(n[0], n[1])
-            for new in newnexts:
-                if new not in self.route and new[1] != '':
-                    nexts.append(new)
-                self.route.append(new)
-                map.add_point(n[0], new[0])
-                map.update()
-        #self.print_details()
-        print(f'Len: {len(map.route)}---{map.route}-----')
+        self.route, map = self.find_complete_route((0,0), "left", False, map, self.dict_mirrors)
         return len(map.route)
-        
-    def part2_solution(self) -> int:
-        pass
 
 if __name__ == "__main__":
-    mode = "test" #"part2", "test"
+    mode = "part1" #"test"
 
     if mode == "test":     
         test_obj = LavaFloor("puzzle-test.txt")
         unittest_dataprocessing = { 
-            'test_1': 46 == test_obj.run_program("part1"),
+            'test_1': 46 == test_obj.run_program("part1")
             }
         for k, v in unittest_dataprocessing.items():
             print(f'{k}: {"passed" if v else "failed"}')
