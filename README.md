@@ -27,5 +27,7 @@ Part 1 Visualization (Unicode in Terminal)
 - day 15: Hash table / hashmap
 - day 17: priority queue, heapq (shortest path problem)
 - day 18: polygon area (shoelace formula / pick's theorem)
+- day 20: deque (instead of recursive), LCM problem
+
 
 
