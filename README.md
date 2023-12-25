@@ -28,6 +28,7 @@ Part 1 Visualization (Unicode in Terminal)
 - day 17: priority queue, heapq (shortest path problem)
 - day 18: polygon area (shoelace formula / pick's theorem)
 - day 20: deque (instead of recursive), LCM problem
+- day 22: Python Sets operation (https://realpython.com/python-sets)
 
 
 
