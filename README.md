@@ -29,6 +29,9 @@ Part 1 Visualization (Unicode in Terminal)
 - day 18: polygon area (shoelace formula / pick's theorem)
 - day 20: deque (instead of recursive), LCM problem
 - day 22: Python Sets operation (https://realpython.com/python-sets)
+- day 23: 
+    - Part1 (own solution): max-heap
+    - Part2 (online solution): Graph theory (adjacency list), depth-first search algorithm, using python stack
 
 
 
