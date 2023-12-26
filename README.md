@@ -32,6 +32,8 @@ Part 1 Visualization (Unicode in Terminal)
 - day 23: 
     - Part1 (own solution): max-heap
     - Part2 (online solution): Graph theory (adjacency list), depth-first search algorithm, using python stack
+- day 24:
+    - SymPy python package for symbolic mathematics
 
 
 
