@@ -19,7 +19,7 @@ Part 1 Visualization (Unicode in Terminal)
 ![part1-vid](python-code/day-16/d16-p1.gif)
 
 
-## DSA topics worth revisit
+## DSA topics worth revisiting
 - day 5: Array slicing
 - day 8: LCM problem
 - day 9: Recursion
