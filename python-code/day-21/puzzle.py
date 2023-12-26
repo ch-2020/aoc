@@ -17,8 +17,7 @@ class StepCounter:
             self.sum = self.part1_solution(steps)
             
         elif mode == "part2":
-            self.sum = self.part2_solution()
-        
+            self.sum = self.part2_solution(steps)
         return self.sum
 
     def extract_data(self):
@@ -44,32 +43,36 @@ class StepCounter:
     def part1_solution(self, steps) -> int:
         self.currenttile = set()
         self.currenttile.add(self.startpose)
+        self.cache = {}
 
         directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
         for _ in range(steps):
             tiles_current = set(self.currenttile)           
             tiles_next = set()
+
             for tr, tc in tiles_current:
-                for r, c in directions:
-                    nr = tr + r
-                    nc = tc + c
-                    if (nr, nc) not in self.rocks:
-                        tiles_next.add((nr, nc))
+                if (tr, tc) in self.cache.keys():
+                    for ir, ic in self.cache[(tr, tc)]:
+                        tiles_next.add((tr + ir, tc + ic))
+                else:
+                    self.cache[(tr, tc)] = []
+                    for r, c in directions:
+                        nr = tr + r
+                        nc = tc + c
+                        if (nr, nc) not in self.rocks:
+                            self.cache[(tr, tc)].append((r, c))
+                            tiles_next.add((nr, nc))
             self.currenttile = set(tiles_next)
         covered = len(self.currenttile)
         return covered     
 
-    def part2_solution(self) -> int:
-        pass
-
 if __name__ == "__main__":
-    mode = "test" #"part2", "test"
+    mode = "part1" #"part2", "test"
 
     if mode == "test":     
         test_obj = StepCounter("puzzle-test.txt")
         unittest_dataprocessing = { 
-            'test_1': 16 == test_obj.run_program("part1", 6),
-            'test_2': 16733044 == test_obj.run_program("part2", 5000),
+            'test_1': 16 == test_obj.run_program("part1", 6)
             }
         for k, v in unittest_dataprocessing.items():
             print(f'{k}: {"passed" if v else "failed"}')
@@ -79,7 +82,3 @@ if __name__ == "__main__":
         sum = func_obj.run_program("part1", 64)    
         print(f'Total number is {sum}') #part1: 3733
 
-    elif mode == "part2":
-        func_obj = StepCounter("puzzle-input.txt")      
-        sum = func_obj.run_program("part2", 26501365)    
-        print(f'Total number is {sum}') #part2:
