@@ -37,7 +37,7 @@ Part 1 Visualization (Unicode in Terminal)
 - day 24:
     - SymPy python package for symbolic mathematics (see equation derivation at https://www.youtube.com/watch?v=guOyA7Ijqgk)
 - day 25:
-    - graph algorithm
+    - graph theory, networkx python package
 
 
 
