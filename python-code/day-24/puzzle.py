@@ -17,9 +17,6 @@ class Hail:
        
         if mode == "part1":
             self.sum = self.part1_solution(low, high)
-            
-        elif mode == "part2":
-            self.sum = self.part2_solution()
         return self.sum
 
     def extract_data(self):
@@ -55,35 +52,6 @@ class Hail:
             else:
                 return False
 
-    def will_intersect_without_range(self, h1, h2):
-        px, py, pz, vx, vy, vz = h1
-        px2, py2, pz2, vx2, vy2, vz2 = h2
-
-        par = np.cross([vx, vy], [vx2, vy2])
-        if par == 0:
-            return False
-        elif (px2 > px and vx2 > 0 and vx < 0) or (px > px2 and vx > 0 and vx2 < 0):
-            return False
-        elif (py2 > py and vy2 > 0 and vy < 0) or (py > py2 and vy > 0 and vy2 < 0):
-            return False
-        else:
-            ta, tb = symbols('ta tb')
-            eq1 = Eq((-ta * vx) + (tb * vx2), px - px2)
-            eq2 = Eq((-ta * vy) + (tb * vy2), py - py2)
-            res = solve((eq1, eq2), (ta, tb))
-
-            ix = float(px + res[ta] * vx)
-            iy = float(py + res[ta] * vy)
-
-            if float(res[ta]) > 0 and float(res[tb]) > 0:
-                if (ix, iy) not in self.cross:
-                    self.cross[(ix, iy)] = {}
-                self.cross[(ix, iy)][(px, py, pz, vx, vy, vz)] = res[ta]
-                self.cross[(ix, iy)][(px2, py2, pz2, vx2, vy2, vz2)] = res[tb]
-                return True
-            else:
-                return False
-
     def part1_solution(self, low, high) -> int:
         combi = combinations(self.extracted_data, 2)
         sum = 0
@@ -94,24 +62,13 @@ class Hail:
                 sum += 1
         return sum
 
-    def part2_solution(self) -> int:
-        combi = combinations(self.extracted_data, 2)
-        sum = 0
-        for i, c in enumerate(combi):
-            #print(f'.... {i} ....')
-            self.will_intersect_without_range(c[0], c[1])
-        pp.pprint(self.cross)
-        input()
-        return sum
-
 if __name__ == "__main__":
     mode = "test" #"part2", "test"
 
     if mode == "test":     
         test_obj = Hail("puzzle-test.txt")
         unittest_dataprocessing = { 
-            #'test_1': 2 == test_obj.run_program("part1", 7, 27),
-            'test_2': 47 == test_obj.run_program("part2")
+            'test_1': 2 == test_obj.run_program("part1", 7, 27),
             }
         for k, v in unittest_dataprocessing.items():
             print(f'{k}: {"passed" if v else "failed"}')
@@ -124,9 +81,3 @@ if __name__ == "__main__":
         end = time.time()
         print(f'Total time is {end - start}')
         print(f'Total number is {sum}') # part1: 13965
-
-    elif mode == "part2":
-        func_obj = Hail("puzzle-input.txt")   
-        print(f'started ....')
-        sum = func_obj.run_program(mode)    
-        print(f'Total number is {sum}') # part2: 

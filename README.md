@@ -35,7 +35,7 @@ Part 1 Visualization (Unicode in Terminal)
     - Part1 (own solution): max-heap
     - Part2 (online solution): Graph theory (adjacency list), depth-first search algorithm, using python stack
 - day 24:
-    - SymPy python package for symbolic mathematics
+    - SymPy python package for symbolic mathematics (see equation derivation at https://www.youtube.com/watch?v=guOyA7Ijqgk)
 - day 25:
     - graph algorithm
 
