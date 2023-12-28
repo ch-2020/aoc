@@ -36,6 +36,8 @@ Part 1 Visualization (Unicode in Terminal)
     - Part2 (online solution): Graph theory (adjacency list), depth-first search algorithm, using python stack
 - day 24:
     - SymPy python package for symbolic mathematics
+- day 25:
+    - graph algorithm
 
 
 

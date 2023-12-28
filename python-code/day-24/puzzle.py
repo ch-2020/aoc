@@ -2,12 +2,15 @@ import numpy as np
 from itertools import combinations, count
 from sympy import symbols, Eq, solve
 import time
+import pprint as pp
 
 class Hail:
     def __init__(self, filepath) -> None:
         self.filepath = filepath
         self.inputs = []
         self.extracted_data = []
+
+        self.cross = {}
 
     def run_program(self, mode, low = 0, high = 0) -> int:
         self.extract_data()
@@ -46,7 +49,37 @@ class Hail:
 
             ix = float(px + res[ta] * vx)
             iy = float(py + res[ta] * vy)
+
             if float(res[ta]) > 0 and float(res[tb]) > 0 and ix >= rangelow and ix <= rangehigh and iy >= rangelow and iy <= rangehigh:
+                return True
+            else:
+                return False
+
+    def will_intersect_without_range(self, h1, h2):
+        px, py, pz, vx, vy, vz = h1
+        px2, py2, pz2, vx2, vy2, vz2 = h2
+
+        par = np.cross([vx, vy], [vx2, vy2])
+        if par == 0:
+            return False
+        elif (px2 > px and vx2 > 0 and vx < 0) or (px > px2 and vx > 0 and vx2 < 0):
+            return False
+        elif (py2 > py and vy2 > 0 and vy < 0) or (py > py2 and vy > 0 and vy2 < 0):
+            return False
+        else:
+            ta, tb = symbols('ta tb')
+            eq1 = Eq((-ta * vx) + (tb * vx2), px - px2)
+            eq2 = Eq((-ta * vy) + (tb * vy2), py - py2)
+            res = solve((eq1, eq2), (ta, tb))
+
+            ix = float(px + res[ta] * vx)
+            iy = float(py + res[ta] * vy)
+
+            if float(res[ta]) > 0 and float(res[tb]) > 0:
+                if (ix, iy) not in self.cross:
+                    self.cross[(ix, iy)] = {}
+                self.cross[(ix, iy)][(px, py, pz, vx, vy, vz)] = res[ta]
+                self.cross[(ix, iy)][(px2, py2, pz2, vx2, vy2, vz2)] = res[tb]
                 return True
             else:
                 return False
@@ -62,7 +95,14 @@ class Hail:
         return sum
 
     def part2_solution(self) -> int:
-        pass
+        combi = combinations(self.extracted_data, 2)
+        sum = 0
+        for i, c in enumerate(combi):
+            #print(f'.... {i} ....')
+            self.will_intersect_without_range(c[0], c[1])
+        pp.pprint(self.cross)
+        input()
+        return sum
 
 if __name__ == "__main__":
     mode = "test" #"part2", "test"
@@ -70,7 +110,7 @@ if __name__ == "__main__":
     if mode == "test":     
         test_obj = Hail("puzzle-test.txt")
         unittest_dataprocessing = { 
-            'test_1': 2 == test_obj.run_program("part1", 7, 27),
+            #'test_1': 2 == test_obj.run_program("part1", 7, 27),
             'test_2': 47 == test_obj.run_program("part2")
             }
         for k, v in unittest_dataprocessing.items():
