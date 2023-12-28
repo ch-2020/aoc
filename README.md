@@ -18,6 +18,9 @@ Part 1 Visualization (Unicode in Terminal)
 
 ![part1-vid](python-code/day-16/d16-p1.gif)
 
+### Day 25
+![xmas](merry-xmas.png)
+
 
 ## DSA topics worth revisiting
 - day 5: Array slicing
