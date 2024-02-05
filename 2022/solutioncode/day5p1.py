@@ -31,4 +31,4 @@ for c in commands:
 res = []
 for st in stackitems:
     res.append(st[-1])
-print(res)
+print("".join(res))
