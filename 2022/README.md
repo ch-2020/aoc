@@ -19,3 +19,7 @@ python3 solution.py -d {day} -p {part} -m t
 ```
 python3 solution.py -d {day} -p {part} -m s
 ```
+
+## Refresh
+
+d7p1: No Space Left On Device (Recursive limit, stacks of dict)

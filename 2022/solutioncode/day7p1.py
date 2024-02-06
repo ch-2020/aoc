@@ -1,53 +1,42 @@
 from global_ import globalvariables as gv
 f = gv.filecontent
 
-import pprint as pp 
-
-dirlist = {"/": []}
-dircontent = {"/": []}
-prevdir = []
-currendir = ""
-
-for l in f.split("\n"):
-    if l[0] == "$":
-        sym, *cmd = l.split()
-        if cmd[0] == "cd" and cmd[1] != "..":
-            prevdir.append(currendir)
-            currendir = cmd[1]
-
-        elif cmd == "cd" and cmd[1] == "..":
-            currendir = prevdir.pop()
-        
+cwd = root = {}
+stack = []
+for line in f.split("\n"):
+    line = line.strip()
+    if line[0] == "$":
+        if line[2] == "c":
+            dir = line[5:]
+            if dir == "/":
+                cwd = root
+                stack = []
+            elif dir == "..":
+                cwd = stack.pop()
+            else:
+                if dir not in cwd:
+                    cwd[dir] = {}
+                stack.append(cwd)
+                cwd = cwd[dir]
     else:
-        c1, c2 = l.split(" ")
-        if c1 == "dir":
-            if c2 not in dirlist.keys():
-                dirlist[c2] = []
-            if c2 not in dircontent.keys():
-                dircontent[c2] = []
-            dirlist[currendir] += c2
+        x, y = line.split()
+        if x == "dir":
+            if y not in cwd:
+                cwd[y] = {}
         else:
-            dircontent[currendir] += [int(c1)]
+            cwd[y] = int(x)
 
-def addsum(dirname, inputlist: list):
-    total = 0
-    if inputlist == []:
-        return sum(map(int, dircontent[dirname]))
-    else:
-        for v, i in enumerate(inputlist):
-            if i in dirlist.keys():
-                total += addsum(i, dirlist[i])
-        total += sum(map(int, dircontent[dirname]))
-    return total
-
-res = {}
-totalstorage = 0
-for k in dirlist.keys():
-    size = addsum(k, dirlist[k])
-    res[k] = size
+def solve(dir = root):
+    if type(dir) == int:
+        return (dir, 0)
+    size = 0
+    ans = 0
+    for child in dir.values():
+        s, a = solve(child)
+        size += s
+        ans += a
     if size <= 100000:
-        totalstorage += size
+        ans += size
+    return (size, ans)
 
-pp.pprint(dirlist)
-pp.pprint(res)
-print(totalstorage)
+print(solve()[1])
