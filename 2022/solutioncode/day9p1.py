@@ -27,6 +27,5 @@ for dir, cnt in commands:
             T[1] = H[1] - move[dir][1]
             stepped.append((T[0], T[1]))
 
-print(stepped)
 print(len(set(stepped)))
         

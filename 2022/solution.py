@@ -1,5 +1,5 @@
 import argparse
-import os, importlib
+import importlib
 from global_ import globalvariables as gv
 
 def get_arguments():
