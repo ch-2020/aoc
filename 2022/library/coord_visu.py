@@ -1,6 +1,7 @@
 class DrawCoordMap:
-    def __init__(self, coords: list):
+    def __init__(self, coords: list, specials: list = []):
         self.coords = coords
+        self.specials = specials
     
     def draw_map(self, maxwidth = 9999999):
         minx = min([ele for ele in zip(*self.coords)][0])
@@ -15,7 +16,9 @@ class DrawCoordMap:
         for y in range(miny, maxy+1):
             show = u'\u2503'
             for x in range(minx, minx + lenx +1):
-                if (x, y) in self.coords:
+                if (x, y) in self.specials:
+                    show += "X"
+                elif (x, y) in self.coords:
                     show += "#"
                 else:
                     show += " "
