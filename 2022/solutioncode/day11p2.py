@@ -31,13 +31,14 @@ def inspect(monkey):
     for it in monkey_items[id]:
         val = tmplist.pop(0)
         updatedval = operation(val, op)
-        updatedval %= test
+        # Divide the large number by LCM 
+        optval = updatedval % mod
 
         monkey_inspections[id] += 1            
-        if updatedval % test == 0:
-            monkey_items[t].append(updatedval)
+        if optval % test == 0:
+            monkey_items[t].append(optval)
         else:
-            monkey_items[f].append(updatedval)
+            monkey_items[f].append(optval)
 
     monkey_items[id] = []
 
@@ -53,6 +54,11 @@ for b in blocks:
     monkeys.append((monkey_id, monkey_op, monkey_test, monkey_true, monkey_false))
     monkey_items.append(monkey_item)
     monkey_inspections.append(0)
+
+# Divide the large number by LCM 
+mod = 1
+for id, op, test, t, f in monkeys:
+    mod *= test
 
 pp.pprint(monkeys)
 pp.pprint(monkey_items)
