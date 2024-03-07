@@ -37,11 +37,10 @@ while len(steps) > 0:
     curr_h = h + dx
     curr_w = w + dy
 
-    #print(f"Step {cnt}: from {(h, w)} --> {(curr_h, curr_w)} using {(dy, dy)}... ")
-
     if (curr_h, curr_w) == E:
         seen.append((curr_h, curr_w, cnt + 1, dx, dy))    
         print(f"reached dest: {cnt}")
+        break
 
     if curr_h >= 0 and curr_h < height and curr_w >= 0 and curr_w < width:
         for dir in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
@@ -52,12 +51,10 @@ while len(steps) > 0:
                 h_nextstep = ord(hmap[nex_h][nex_w])
                 h_current = ord(hmap[curr_h][curr_w])
                 count = cnt + 1 
-                if ((h_nextstep - h_current) <= 1 and (h_nextstep - h_current) >= 0) and (curr_h, curr_w, count, dir[0], dir[1]) not in seen and (nex_h, nex_w, count - 1, -dir[0], -dir[1]) not in seen:
-                    seen.append((curr_h, curr_w, count, dir[0], dir[1]))    
+                if (h_nextstep - h_current) <= 1 and (curr_h, curr_w, dir[0], dir[1]) not in seen and (nex_h, nex_w, -dir[0], -dir[1]) not in seen:
+                    seen.append((curr_h, curr_w, dir[0], dir[1]))    
                     steps.append((curr_h, curr_w, count, dir[0], dir[1]))
                     visu.append((curr_h, curr_w))
-
-# Should change it to recursive function...
 
 visu = list(set(visu))
 from library.coord_visu import DrawCoordMap
