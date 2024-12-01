@@ -1,0 +1,2 @@
+def globalvariables():
+    global filecontent
