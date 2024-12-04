@@ -34,4 +34,6 @@ for l in f.split("\n"):
                 sum += 1
         
 print(sum)
+
+# [j-i for i, j in zip(t[:-1], t[1:])]
         
