@@ -21,6 +21,3 @@ python3 solution.py -d {day} -p {part} -m s
 ```
 
 ## Refresh
-
-d7p1: No Space Left On Device (Recursive limit, stacks of dict)
-d11p2: Monkey in the Middle (Too large numbers, divided by lcm)
